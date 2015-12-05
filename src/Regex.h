@@ -1,12 +1,13 @@
 #ifndef Regex_H
 #define Regex_H
 
+#include "Node.h"
 #include "LinkedList.h"
 
 typedef struct{
-  char text[0];
   int possition;
   int length;
+  char text[0];
 }Match;
 
 typedef struct {
@@ -15,6 +16,6 @@ typedef struct {
   Match (*ptr)[];
 }MatchObject;
 
-Match *matchObjectregEx(char *text,LinkedList *pattern);
+Match *matchObjectregEx(char *text,Node *pattern);
 
 #endif // Regex_H
