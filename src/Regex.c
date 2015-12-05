@@ -7,8 +7,8 @@
 Match *matchObjectregEx(char *text,Node *pattern){
   if(text==NULL || pattern==NULL)
     return NULL;
-  Match *match=malloc(sizeof(Match));
-  
+  Match *match=malloc(sizeof(Match)+sizeof(char));
+
   // i=>textIndex j=>matchTextIndex
   int i=0,j=0;
 
@@ -24,33 +24,33 @@ Match *matchObjectregEx(char *text,Node *pattern){
           return match;
         }
       }
-    }    
+    }
     else if(strcmp(pattern->data,"\\d")==0){
       if(*(text+i)>=48 && *(text+i)<=57){
         if(j==0)
-          match->possition=i;  
+          match->possition=i;
         match->text[j]=text[i];
         match->text[j+1]=0;
       }
       else{
         match=NULL;
       }
-    }   
+    }
     else if(strcmp(pattern->data,"\\A")==0){
       if(*(text+i)>=65 && *(text+i)<=90){
         if(j==0)
-          match->possition=i; 
+          match->possition=i;
         match->text[j]=text[i];
         match->text[j+1]=0;
       }
       else{
         match=NULL;
       }
-    }    
+    }
     else if(strcmp(pattern->data,"\\a")==0){
       if(*(text+i)>=97 && *(text+i)<=122){
         if(j==0)
-          match->possition=i; 
+          match->possition=i;
         match->text[j]=text[i];
         match->text[j+1]=0;
       }
@@ -61,7 +61,7 @@ Match *matchObjectregEx(char *text,Node *pattern){
     else if(strcmp(pattern->data,"\\w")==0){
       if( (*(text+i)>=48 && *(text+i)<=57) || (*(text+i)>=65 && *(text+i)<=90) || (*(text+i)>=97 && *(text+i)<=122)){
         if(j==0)
-          match->possition=i; 
+          match->possition=i;
         match->text[j]=text[i];
         match->text[j+1]=0;
       }
@@ -72,7 +72,7 @@ Match *matchObjectregEx(char *text,Node *pattern){
     else if(strcmp(pattern->data,"\\s")==0){
       if(*(text+i)==32){
         if(j==0)
-          match->possition=i; 
+          match->possition=i;
         match->text[j]=text[i];
         match->text[j+1]=0;
       }
@@ -82,7 +82,7 @@ Match *matchObjectregEx(char *text,Node *pattern){
     }
     i++;j++;
     pattern=pattern->next;
-    
+
   }
   return match;
 

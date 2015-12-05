@@ -1,6 +1,5 @@
 #include "unity.h"
 #include "Regex.h"
-#include "LinkedList.h"
 #include "Node.h"
 #include "addNode.h"
 #include <stdio.h>
@@ -37,85 +36,60 @@ void tearDown(void)
 void test_Regex_given_text_matches_pattern_should_return_matched_text(void)
 {
   Node *pattern;
-  
+
   Match *match;
   int i;
-  
+
   pattern=nodeWord;
-  
+
   match=matchObjectregEx("a",pattern);
-  
+
   TEST_ASSERT_EQUAL_PTR(nodeWord,pattern);
-  
+  TEST_ASSERT_NULL(pattern->next);
+
   TEST_ASSERT_EQUAL_STRING("a",match->text);
   TEST_ASSERT_EQUAL(1,match->length);
   TEST_ASSERT_EQUAL(0,match->possition);
-  
-  free(nodeWord);
-  free(match);
-  free(pattern);
 }
 
 void test_Regex_given_text_matches_pattern_should_return_matched_text1(void)
 {
   Node *pattern;
-  
+
   Match *match;
   int i;
-  
+
   pattern=nodeWord;
   addNode(&pattern,nodeDecimal);
-  
+
   match=matchObjectregEx("a1",pattern);
-  
-  
+
+  TEST_ASSERT_EQUAL_PTR(nodeWord,pattern);
+  TEST_ASSERT_EQUAL_PTR(nodeDecimal,pattern->next);
+  TEST_ASSERT_NULL(pattern->next->next);
+
   TEST_ASSERT_EQUAL_STRING("a1",match->text);
   TEST_ASSERT_EQUAL(2,match->length);
   TEST_ASSERT_EQUAL(0,match->possition);
-  
-  free(nodeWord);
-  free(nodeDecimal);
-  free(match);
-  free(pattern);
+
 }
 
-void test_Regex_given_text_matches_pattern_should_return_matched_text2(void)
+void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
 {
   Node *pattern;
-  
+
   Match *match;
   int i;
-  
+  char *str="a1";
+
   pattern=nodeWord;
   addNode(&pattern,nodeDecimal);
-  
+  addNode(&pattern,nodeDecimal1);
+
+
   match=matchObjectregEx("a1",pattern);
-  
-  
-  TEST_ASSERT_EQUAL_STRING("a1",match->text);
-  TEST_ASSERT_EQUAL(2,match->length);
-  TEST_ASSERT_EQUAL(0,match->possition);
-  
+
+  TEST_ASSERT_NULL(match);
+
 }
-
-
-
-// void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
-// {
-  // Node *pattern;
-  
-  // Match *match;
-  // int i;
-  // char *str="a1";
-  
-  // pattern=nodeWord;
-  // addNode(&pattern,nodeDecimal);
-  // addNode(&pattern,nodeDecimal1);
-  
-  
-  // match=matchObjectregEx("a1",pattern);
-  
-  // TEST_ASSERT_NULL(match);
-  
-// }
 
