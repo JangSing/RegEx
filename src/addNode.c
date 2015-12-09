@@ -7,7 +7,7 @@ void addNode(Node **rootPtr,Node *newNode){
   while(tempNode->next!=NULL)
     tempNode=tempNode->next;
   tempNode->next=newNode;
-  
+
 }
 
 

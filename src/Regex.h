@@ -13,9 +13,10 @@ typedef struct{
 typedef struct {
   int   match;
   int   numOfMatch;
-  Match (*ptr)[];
+  Match *ptr[];
 }MatchObject;
 
-Match *matchObjectregEx(char *text,Node *pattern);
+MatchObject *createMatchObj();
+MatchObject *matchObjectregEx(MatchObject *matchObj,char *text,Node *pattern);
 
 #endif // Regex_H
