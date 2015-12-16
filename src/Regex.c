@@ -72,7 +72,7 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
         // }while(pattern->attribute!=0);
       }
       else
-        match=NULL;
+        (matchObj->match)=0;
       i++;
     }
     pattern=pattern->next;

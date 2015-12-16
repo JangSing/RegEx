@@ -1,7 +1,11 @@
 #include "Match.h"
+#include "ErrorObject.h"
 #include <stdlib.h>
 
 int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j){
+  if(*matchObj==NULL || *match==NULL || text==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
+  
   if(*(text+i)>=48 && *(text+i)<=57){
     if(j==0)
       (*match)->possition=i;
@@ -18,6 +22,8 @@ int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j){
   return j;
 }
 int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
+  if(*matchObj==NULL || *match==NULL || text==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)>=65 && *(text+i)<=90){
     if(j==0)
       (*match)->possition=i;
@@ -34,6 +40,8 @@ int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
   return j;
 }
 int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
+  if(*matchObj==NULL || *match==NULL || text==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)>=97 && *(text+i)<=122){
     if(j==0)
       (*match)->possition=i;
@@ -50,6 +58,8 @@ int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
   return j;
 }
 int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j){
+  if(*matchObj==NULL || *match==NULL || text==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if( (*(text+i)>=48 && *(text+i)<=57) || (*(text+i)>=65 && *(text+i)<=90) || (*(text+i)>=97 && *(text+i)<=122)){
     if(j==0)
       (*match)->possition=i;
@@ -66,6 +76,8 @@ int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j){
   return j;
 }
 int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j){
+  if(*matchObj==NULL || *match==NULL || text==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)==32){
     if(j==0)
       (*match)->possition=i;
@@ -82,6 +94,8 @@ int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j){
   return j;
 }
 int matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int j){
+  if(*matchObj==NULL || *match==NULL || pattern ==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/match/text/pattern cannot be NULL.");
   if(*(text+i)==pattern->data){
     if(j==0)
       (*match)->possition=i;

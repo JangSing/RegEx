@@ -3,6 +3,8 @@
 #include "Node.h"
 #include "addNode.h"
 #include "Match.h"
+#include "ErrorObject.h"
+#include "CException.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -196,8 +198,9 @@ void test_Regex_given_text_longer_than_pattern_should_return_NULL_match(void)
  */
 void test_Regex_given_text_longer_than_pattern_with_only_space_should_return_NULL_match(void)
 {
+  ErrorObject *err;
+  
   Node *pattern=NULL;
-
   
   MatchObject *matchObj=createMatchObj();
   int i;
@@ -207,7 +210,7 @@ void test_Regex_given_text_longer_than_pattern_with_only_space_should_return_NUL
   addNode(&pattern,nodeDigit);
 
   matchObj=matchObjectRegEx(matchObj,str,pattern);
-  
+
   TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
   TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
   TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
@@ -241,7 +244,6 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
   TEST_ASSERT_EQUAL(2,matchObj->ptr[1]->length);
   TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
   TEST_ASSERT_EQUAL(3,matchObj->ptr[1]->possition);
-
 }
   
 /**

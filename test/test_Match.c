@@ -1,6 +1,8 @@
 #include "unity.h"
 #include "Match.h"
 #include "Regex.h"
+#include "ErrorObject.h"
+#include "CException.h"
 #include <stdlib.h>
 
 Node *nodeA;
@@ -20,6 +22,23 @@ void setUp(void)
 
 void tearDown(void)
 {
+}
+
+void test_match_Digit_function_given_element_passing_into_function_is_NULL(void)
+{
+  ErrorObject *err;
+  int j=0;int i=0;
+  char *text=NULL;
+  MatchObject *matchObj=NULL;
+  Match *match=NULL;
+  
+  Try{
+    j=matchDigit(&matchObj,&match,text,i,j);
+  }Catch(err){
+    TEST_ASSERT_EQUAL_STRING("matchObj/match/text cannot be NULL.",err->errorMsg);
+    free(err);
+  }
+  
 }
 
 void test_match_Digit_function_given_text_is_not_digit_should_give_0_to_match_in_matchObj(void)
