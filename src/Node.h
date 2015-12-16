@@ -3,9 +3,9 @@
 
 typedef struct Node_t Node;
 struct Node_t{
-  Node *next;
-  char *data;
-  int attribute;
+  Node  *next;
+  int   data;
+  int   attribute;
 };
 
 #endif // Node_H
