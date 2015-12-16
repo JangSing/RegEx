@@ -1,6 +1,6 @@
 #include "Regex.h"
-#include "LinkedList.h"
 #include "Node.h"
+#include "Match.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -24,108 +24,7 @@ Match *createMatch(){
 
   return match;
 }
-int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j){
-  if(*(text+i)>=48 && *(text+i)<=57){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
-int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
-  if(*(text+i)>=65 && *(text+i)<=90){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
-int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
-  if(*(text+i)>=97 && *(text+i)<=122){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
-int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j){
-  if( (*(text+i)>=48 && *(text+i)<=57) || (*(text+i)>=65 && *(text+i)<=90) || (*(text+i)>=97 && *(text+i)<=122)){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
-int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j){
-  if(*(text+i)==32){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
-int matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int j){
-  if(*(text+i)==pattern->data){
-    if(j==0)
-      (*match)->possition=i;
-    (*match)->text[j]=text[i];
-    (*match)->text[j+1]=0;
-    (*matchObj)->match=1;
-    j++;
-  }
-  else{
-    *match=NULL;
-    (*matchObj)->match=0;
-    j=0;
-  }
-  
-  return j;
-}
+
 
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
   if(text==NULL || pattern==NULL)
@@ -142,32 +41,16 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
       if(*(text+i)!=0){
         while(*(text+i)!=0 ){ 
           if(*(text+i)==32 ){
-            if(matchObj->match){
-              match->length=i;
-              matchObj->numOfMatch++;
-              matchObj->ptr[matchObj->numOfMatch-1] = match;
-            }
-            else{
-              matchObj->ptr[matchObj->numOfMatch]=match;
-            }
+            checkMatches(&matchObj,&match,i);
             matchObj=matchObjectRegEx(matchObj,text+i+1,startPattern);
-            if(*(text+i+1)!=0){
+            if(*(text+i+1)!=0)
               (matchObj->ptr[matchObj->numOfMatch-1]->possition)+=i+1;
-              
-            }
           }
           i++;    
         }
       }
       else{
-        if(match!=NULL){
-          match->length=i;
-          matchObj->numOfMatch++;
-          matchObj->ptr[matchObj->numOfMatch-1] = match;
-        }
-        else{
-          matchObj->ptr[matchObj->numOfMatch]=match;
-        }
+        checkMatches(&matchObj,&match,i);
       }
       return matchObj;
     }
@@ -183,11 +66,9 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
               case ALPHA      :j=matchAlpha(&matchObj,&match,text,i,j);break;
               case WORD       :j=matchWord(&matchObj,&match,text,i,j);break;
               case SPACE      :j=matchSpace(&matchObj,&match,text,i,j);break;
-              default         :match=NULL;j=0;break;
+              default         :(matchObj->match)=0;j=0;break;
             }
           }
-          
-          
         // }while(pattern->attribute!=0);
       }
       else

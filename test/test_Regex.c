@@ -2,6 +2,7 @@
 #include "Regex.h"
 #include "Node.h"
 #include "addNode.h"
+#include "Match.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -20,7 +21,7 @@ Node  *nodeC;
 
 Node *resetNode(int pattern,int attribute){
   Node *node=malloc(sizeof(Node));
-
+  
   node->data = pattern;
   node->attribute = attribute;
   node->next =NULL;

@@ -2,7 +2,6 @@
 #define Regex_H
 
 #include "Node.h"
-#include "LinkedList.h"
 
 #define DIGIT       0x100
 #define WORD        0x200
@@ -30,12 +29,7 @@ typedef struct {
 
 MatchObject *createMatchObj();
 Match *createMatch();
-int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j);
-int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j);
-int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j);
-int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j);
-int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j);
-int matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int j);
+
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern);
 
 #endif // Regex_H
