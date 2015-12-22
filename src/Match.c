@@ -5,7 +5,7 @@
 int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j){
   if(*matchObj==NULL || *match==NULL || text==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
-  
+
   if(*(text+i)>=48 && *(text+i)<=57){
     if(j==0)
       (*match)->possition=i;
@@ -16,9 +16,8 @@ int matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int j){
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
 int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
@@ -34,9 +33,8 @@ int matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
 int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
@@ -52,9 +50,8 @@ int matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int j){
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
 int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j){
@@ -70,9 +67,8 @@ int matchWord(MatchObject **matchObj,Match **match,char *text,int i,int j){
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
 int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j){
@@ -88,9 +84,8 @@ int matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int j){
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
 int matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int j){
@@ -106,12 +101,10 @@ int matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int 
   }
   else{
     (*matchObj)->match=0;
-    j=0;
   }
-  
+
   return j;
 }
-
 
 void checkMatches(MatchObject **matchObj,Match **match,int i){
   if((*matchObj)->match){

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ptrIndex  (matchObj->numOfMatch)-1 
+#define ptrIndex  (matchObj->numOfMatch)-1
 
 MatchObject *createMatchObj(){
   MatchObject *matchObj=malloc(sizeof(MatchObject)+sizeof(Match)+sizeof(char));
@@ -33,20 +33,21 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
 
   // i=>textIndex j=>matchTextIndex
   int i=0;int j=0;
+  int count=0;
 
   Node *startPattern=pattern;
 
   while(1){
     if(pattern==NULL){
       if(*(text+i)!=0){
-        while(*(text+i)!=0 ){ 
+        while(*(text+i)!=0 ){
           if(*(text+i)==32 ){
             checkMatches(&matchObj,&match,i);
             matchObj=matchObjectRegEx(matchObj,text+i+1,startPattern);
             if(*(text+i+1)!=0)
               (matchObj->ptr[matchObj->numOfMatch-1]->possition)+=i+1;
           }
-          i++;    
+          i++;
         }
       }
       else{
@@ -56,9 +57,10 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
     }
     else {
       if(*(text+i)!=0){
-        // do{
-          if(pattern->data<0xFF)
+        do{
+          if(pattern->data<0xFF){
             j=matchText(&matchObj,&match,text,pattern,i,j);
+          }
           else{
             switch(pattern->data){
               case DIGIT      :j=matchDigit(&matchObj,&match,text,i,j);break;
@@ -69,11 +71,34 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
               default         :(matchObj->match)=0;j=0;break;
             }
           }
-        // }while(pattern->attribute!=0);
+          if(pattern->attribute==ATT_ASTERISK && !(matchObj->match)){
+            matchObj->match=1;
+            break;
+          }
+          else if(pattern->attribute==ATT_PLUS && !(matchObj->match)){
+            if(count==0){
+              j=0;
+              while(pattern->next!=NULL){
+                pattern=pattern->next;
+              }
+            }
+            else{
+              matchObj->match=1;
+              count=0;
+            }
+            break;
+          }
+
+          if(pattern->attribute!=0)
+            count++;
+
+          i++;
+        }while(pattern->attribute!=0);
       }
-      else
+      else{
+        j=0;
         (matchObj->match)=0;
-      i++;
+      }
     }
     pattern=pattern->next;
   }

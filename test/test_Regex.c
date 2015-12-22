@@ -12,6 +12,7 @@
 Node  *nodeDigit;
 Node  *nodeDigit1;
 Node  *nodeDigitAst;
+Node  *nodeDigitPlus;
 Node  *nodeCapAlpha;
 Node  *nodeAlpha;
 Node  *nodeWord;
@@ -23,7 +24,7 @@ Node  *nodeC;
 
 Node *resetNode(int pattern,int attribute){
   Node *node=malloc(sizeof(Node));
-  
+
   node->data = pattern;
   node->attribute = attribute;
   node->next =NULL;
@@ -33,6 +34,7 @@ void setUp(void){
   nodeDigit=resetNode(DIGIT,0);
   nodeDigit1=resetNode(DIGIT,0);
   nodeDigitAst=resetNode(DIGIT,ATT_ASTERISK);
+  nodeDigitPlus=resetNode(DIGIT,ATT_PLUS);
   nodeCapAlpha=resetNode(CAP_ALPHA,0);
   nodeAlpha=resetNode(ALPHA,0);
   nodeWord=resetNode(WORD,0);
@@ -55,7 +57,7 @@ void test_Regex_given_text_not_matches_digit_pattern_should_return_NULL_matches(
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a";
@@ -76,7 +78,7 @@ void test_Regex_given_text_matches_WORD_pattern_should_return_matchObj(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a";
@@ -89,7 +91,7 @@ void test_Regex_given_text_matches_WORD_pattern_should_return_matchObj(void)
   TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
   TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
   TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
-  
+
 }
 
 /**
@@ -101,7 +103,7 @@ void test_Regex_given_text_matches_pattern_should_return_matched_text(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -131,7 +133,7 @@ void test_Regex_given_text_not_matches_pattern_should_return_NULL_match(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="aa";
@@ -142,7 +144,7 @@ void test_Regex_given_text_not_matches_pattern_should_return_NULL_match(void)
   matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
-  
+
 }
 
 /**
@@ -154,7 +156,7 @@ void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -178,7 +180,7 @@ void test_Regex_given_text_longer_than_pattern_should_return_NULL_match(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a123";
@@ -199,9 +201,9 @@ void test_Regex_given_text_longer_than_pattern_should_return_NULL_match(void)
 void test_Regex_given_text_longer_than_pattern_with_only_space_should_return_NULL_match(void)
 {
   ErrorObject *err;
-  
+
   Node *pattern=NULL;
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1 ";
@@ -226,7 +228,7 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1 a2";
@@ -235,7 +237,7 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
   addNode(&pattern,nodeDigit);
 
   matchObj=matchObjectRegEx(matchObj,str,pattern);
-  
+
   TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
   TEST_ASSERT_NOT_NULL(matchObj->ptr[1]);
   TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
@@ -245,7 +247,7 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
   TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
   TEST_ASSERT_EQUAL(3,matchObj->ptr[1]->possition);
 }
-  
+
 /**
  *  text    = aa a2
  *  pattern = \w\d
@@ -255,7 +257,7 @@ void test_Regex_given_before_space_not_match_after_space_matches_should_return_m
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="aa a2";
@@ -264,14 +266,14 @@ void test_Regex_given_before_space_not_match_after_space_matches_should_return_m
   addNode(&pattern,nodeDigit);
 
   matchObj=matchObjectRegEx(matchObj,str,pattern);
-  
+
   TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
   TEST_ASSERT_EQUAL_STRING("a2",matchObj->ptr[0]->text);
   TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
   TEST_ASSERT_EQUAL(3,matchObj->ptr[0]->possition);
 
 }
-  
+
 /**
  *  text    = a1
  *  pattern = a\d
@@ -281,7 +283,7 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -296,25 +298,106 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
   TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
 
 }
-    
+
 /**
- *  text    = a111a
- *  pattern = a\d*a
+ *  text    = a111b
+ *  pattern = a\d*b
  *
  */
 void test_Regex_given_pattern_with_alpha_a_and_digit_attribute_asterisk_matches_text_should_return_matchObj(void)
 {
   Node *pattern=NULL;
 
-  
+
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="a111a";
+  char *str="a111b";
 
   pattern=nodeA;
+  addNode(&pattern,nodeDigitAst);
   addNode(&pattern,nodeB);
 
   matchObj=matchObjectRegEx(matchObj,str,pattern);
 
+  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
+  TEST_ASSERT_EQUAL_STRING("a111b",matchObj->ptr[0]->text);
+  TEST_ASSERT_EQUAL(5,matchObj->ptr[0]->length);
+  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+
 }
-  
+
+/**
+ *  text    = ab
+ *  pattern = a\d*b
+ *
+ */
+void test_Regex_given_pattern_with_alpha_a_and_digit_attribute_asterisk_matches_text_should_return_matchObj1(void)
+{
+  Node *pattern=NULL;
+
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="ab";
+
+  pattern=nodeA;
+  addNode(&pattern,nodeDigitAst);
+  addNode(&pattern,nodeB);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
+  TEST_ASSERT_EQUAL_STRING("ab",matchObj->ptr[0]->text);
+  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
+  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+}
+
+/**
+ *  text    = a111b
+ *  pattern = a\d+b
+ *
+ */
+void test_Regex_given_pattern_with_alpha_a_and_digit_attribute_plus_matches_text_should_return_matchObj(void)
+{
+  Node *pattern=NULL;
+
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="a111b";
+
+  pattern=nodeA;
+  addNode(&pattern,nodeDigitPlus);
+  addNode(&pattern,nodeB);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
+  TEST_ASSERT_EQUAL_STRING("a111b",matchObj->ptr[0]->text);
+  TEST_ASSERT_EQUAL(5,matchObj->ptr[0]->length);
+  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+}
+
+/**
+ *  text    = a111b
+ *  pattern = a\d+b
+ *
+ */
+void test_Regex_given_pattern_with_alpha_a_and_digit_attribute_plus_does_not_matches_text_should_throw_error(void)
+{
+  Node *pattern=NULL;
+
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="ab";
+
+  pattern=nodeA;
+  addNode(&pattern,nodeDigitPlus);
+  addNode(&pattern,nodeB);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_NULL(matchObj->ptr[0]);
+}
+
