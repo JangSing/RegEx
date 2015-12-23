@@ -44,7 +44,7 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
           if(*(text+i)==32 ){
             checkMatches(&matchObj,&match,i);
             matchObj=matchObjectRegEx(matchObj,text+i+1,startPattern);
-            if(*(text+i+1)!=0)
+            if(matchObj->ptr[matchObj->numOfMatch-1]!=NULL && *(text+i+1)!=0)
               (matchObj->ptr[matchObj->numOfMatch-1]->possition)+=i+1;
           }
           i++;
@@ -71,33 +71,22 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
               default         :(matchObj->match)=0;j=0;break;
             }
           }
-          if(pattern->attribute==ATT_ASTERISK && !(matchObj->match)){
-            matchObj->match=1;
-            break;
-          }
-          else if(pattern->attribute==ATT_PLUS && !(matchObj->match)){
-            if(count==0){
-              j=0;
-              while(pattern->next!=NULL){
-                pattern=pattern->next;
-              }
-            }
-            else{
-              matchObj->match=1;
-              count=0;
+          if(!matchObj->match){
+            switch(pattern->attribute){
+              case ATT_ASTERISK :matchObj->match=1;count=0;break;
+              case ATT_PLUS     :checkForOneOrMore(&matchObj,&pattern,&j,&count);break;
+              case ATT_QUESTION :checkForZeroOrOne(&matchObj,&pattern,&j,&count);break;
             }
             break;
           }
-
           if(pattern->attribute!=0)
             count++;
-
           i++;
         }while(pattern->attribute!=0);
       }
       else{
         j=0;
-        (matchObj->match)=0;
+        matchObj->match=0;
       }
     }
     pattern=pattern->next;

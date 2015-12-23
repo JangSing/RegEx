@@ -116,3 +116,33 @@ void checkMatches(MatchObject **matchObj,Match **match,int i){
     (*matchObj)->ptr[(*matchObj)->numOfMatch]= NULL;
   }
 }
+
+void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count){
+  if(*count==0){
+    *j=0;
+    while((*pattern)->next!=NULL){
+      *pattern=(*pattern)->next;
+    }
+  }
+  else{
+    (*matchObj)->match=1;
+    *count=0;
+  }
+}
+
+void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count){
+  if(*count>1){
+    *j=0;
+    while((*pattern)->next!=NULL){
+      *pattern=(*pattern)->next;
+    }
+  }
+  else{
+    (*matchObj)->match=1;
+    *count=0;
+  }
+}
+
+
+
+
