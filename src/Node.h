@@ -6,6 +6,8 @@ struct Node_t{
   Node  *next;
   int   data;
   int   attribute;
+  int   begin;
+  int   end;
 };
 
 #endif // Node_H

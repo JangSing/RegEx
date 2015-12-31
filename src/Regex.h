@@ -13,6 +13,8 @@
 #define ATT_ASTERISK  1
 #define ATT_PLUS      2
 #define ATT_QUESTION  3
+#define ATT_RANGE     4
+#define ATT_EXACT     5
 
 
 typedef struct{
@@ -29,7 +31,7 @@ typedef struct {
 
 MatchObject *createMatchObj();
 Match *createMatch();
-
+void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i);
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern);
 
 #endif // Regex_H
