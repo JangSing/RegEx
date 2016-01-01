@@ -5,6 +5,7 @@
 #include "Match.h"
 #include "ErrorObject.h"
 #include "CException.h"
+#include "CustomAssertion.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -68,21 +69,16 @@ void test_testing(void)
 
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="asas aasas a asasaa a asasasijai sjaijs a";
+  char *str="asas aasas a asasaa a asasij";
 
   pattern=nodeA;
 
   regexObject(&matchObj,str,pattern);
-  
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[1]->text);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[2]->text);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[1]->length);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[2]->length);
-  TEST_ASSERT_EQUAL(11,matchObj->ptr[0]->possition);
-  TEST_ASSERT_EQUAL(20,matchObj->ptr[1]->possition);
-  TEST_ASSERT_EQUAL(40,matchObj->ptr[2]->possition);
+
+  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a",1,11,matchObj);
+  TEST_ASSERT_MATCH(1,"a",1,20,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[2]);
 }
+
+

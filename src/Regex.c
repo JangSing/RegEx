@@ -33,7 +33,7 @@ void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *star
     int matchNo=(*matchObj)->numOfMatch;
     if(*(text+(*i))==32 ){
       (*matchObj)=matchObjectRegEx((*matchObj),text+(*i)+1,startPattern);
-      if( *(text+(*i)+1)!=0){
+      if( *(text+(*i)+1)!=0 && (*matchObj)->ptr[matchNo]!=NULL){
         ((*matchObj)->ptr[matchNo]->possition)+=(*i)+1;
       }
       break;
@@ -44,9 +44,12 @@ void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *star
 
 MatchObject *possitionCalculate(MatchObject *matchObj){
   int index=0;
-  while(matchObj->ptr[index+1]!=NULL){
-    matchObj->ptr[index+1]->possition+=matchObj->ptr[index]->possition;
-    index++;
+
+  if(matchObj->ptr[index]!=NULL){
+    while(matchObj->ptr[index+1]!=NULL){
+      matchObj->ptr[index+1]->possition+=matchObj->ptr[index]->possition;
+      index++;
+    }
   }
   return matchObj;
 }
@@ -114,3 +117,6 @@ void regexObject(MatchObject **matchObj,char *text,Node *pattern){
   *matchObj=matchObjectRegEx(*matchObj,text,pattern);
   *matchObj=possitionCalculate(*matchObj);
 }
+
+
+

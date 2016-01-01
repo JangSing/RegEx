@@ -5,6 +5,7 @@
 #include "Match.h"
 #include "ErrorObject.h"
 #include "CException.h"
+#include "CustomAssertion.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -72,7 +73,7 @@ void test_Regex_given_text_not_matches_digit_pattern_should_return_NULL_matches(
 
   pattern=nodeDigit;
 
-  matchObj=matchObjectRegEx(matchObj,str,pattern);
+  regexObject(&matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -95,11 +96,9 @@ void test_Regex_given_text_matches_WORD_pattern_should_return_matchObj(void)
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
-
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a",1,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -121,14 +120,9 @@ void test_Regex_given_text_matches_pattern_should_return_matched_text(void)
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL_PTR(nodeWord,pattern);
-  TEST_ASSERT_EQUAL_PTR(nodeDigit,pattern->next);
-  TEST_ASSERT_NULL(pattern->next->next);
-
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -151,7 +145,6 @@ void test_Regex_given_text_not_matches_pattern_should_return_NULL_match(void)
   regexObject(&matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
-
 }
 
 /**
@@ -220,10 +213,9 @@ void test_Regex_given_text_longer_than_pattern_with_only_space_should_return_NUL
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -245,14 +237,10 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[1]);
-  TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL_STRING("a2",matchObj->ptr[1]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[1]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
-  TEST_ASSERT_EQUAL(3,matchObj->ptr[1]->possition);
+  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_MATCH(1,"a2",2,3,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[2]);
 }
 
 /**
@@ -274,11 +262,9 @@ void test_Regex_given_before_space_not_match_after_space_matches_should_return_m
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a2",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(3,matchObj->ptr[0]->possition);
-
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a2",2,3,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -300,11 +286,9 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a1",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
-
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -327,11 +311,9 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_multiples_digits_s
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a111b",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(5,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
-
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a111b",5,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -354,10 +336,9 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("ab",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"ab",2,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -381,7 +362,6 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
   regexObject(&matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
-
 }
 
 /**
@@ -404,10 +384,9 @@ void test_Regex_given_attribute_plus_pattern_compare_with_multiples_digits_shoul
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a111b",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(5,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a111b",5,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -453,10 +432,9 @@ void test_Regex_given_attribute_question_pattern_compare_with_not_digits_should_
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("ab",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(2,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"ab",2,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -502,10 +480,9 @@ void test_Regex_given_pattern_with_digit_attribute_range_count_number_within_ran
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a1234b",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(6,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a1234b",6,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -552,10 +529,9 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a12345b",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(7,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(0,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a12345b",7,0,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -576,10 +552,9 @@ void test_Regex_given_text_matches_pattern_should_return_correct_possition_and_m
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(20,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_MATCH(0,"a",1,20,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
@@ -600,16 +575,10 @@ void test_Regex_given_text_matches_pattern_multiple_times_should_return_correct_
 
   regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
   TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[1]->text);
-  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[2]->text);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[1]->length);
-  TEST_ASSERT_EQUAL(1,matchObj->ptr[2]->length);
-  TEST_ASSERT_EQUAL(11,matchObj->ptr[0]->possition);
-  TEST_ASSERT_EQUAL(20,matchObj->ptr[1]->possition);
-  TEST_ASSERT_EQUAL(40,matchObj->ptr[2]->possition);
+  TEST_ASSERT_MATCH(0,"a",1,11,matchObj);
+  TEST_ASSERT_MATCH(1,"a",1,20,matchObj);
+  TEST_ASSERT_MATCH(2,"a",1,40,matchObj);
+  TEST_ASSERT_NULL(matchObj->ptr[3]);
 }
 
