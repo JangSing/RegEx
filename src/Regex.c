@@ -30,10 +30,11 @@ void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *star
   }
   checkMatches(matchObj,match,*i);
   while(*(text+(*i))!=0 ){
+    int matchNo=(*matchObj)->numOfMatch;
     if(*(text+(*i))==32 ){
       (*matchObj)=matchObjectRegEx((*matchObj),text+(*i)+1,startPattern);
       if( *(text+(*i)+1)!=0){
-        ((*matchObj)->ptr[(*matchObj)->numOfMatch-1]->possition)+=(*i)+1;
+        ((*matchObj)->ptr[matchNo]->possition)+=(*i)+1;
       }
       break;
     }
@@ -41,9 +42,16 @@ void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *star
   }
 }
 
+MatchObject *possitionCalculate(MatchObject *matchObj){
+  int index=0;
+  while(matchObj->ptr[index+1]!=NULL){
+    matchObj->ptr[index+1]->possition+=matchObj->ptr[index]->possition;
+    index++;
+  }
+  return matchObj;
+}
 
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
-
   if(text==NULL || pattern==NULL)
     return NULL;
   Match *match=createMatch();
@@ -53,15 +61,12 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
 
   Node *startPattern=pattern;
   while(1){
-
     if(pattern==NULL){
-      if(*(text+i)!=0){
+      if(*(text+i)!=0)
         endOfTextOrSpace(&matchObj,&match,text,startPattern,&i);
-      }
-      else{
+      else
         checkMatches(&matchObj,&match,i);
-      }
-      return matchObj;
+      break;
     }
     else {
       if(*(text+i)!=0){
@@ -102,4 +107,10 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
     }
     pattern=pattern->next;
   }
+  return matchObj;
+}
+
+void regexObject(MatchObject **matchObj,char *text,Node *pattern){
+  *matchObj=matchObjectRegEx(*matchObj,text,pattern);
+  *matchObj=possitionCalculate(*matchObj);
 }

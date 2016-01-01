@@ -17,6 +17,7 @@
 #define ATT_EXACT     5
 
 
+
 typedef struct{
   int possition;
   int length;
@@ -32,6 +33,7 @@ typedef struct {
 MatchObject *createMatchObj();
 Match *createMatch();
 void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i);
+MatchObject *possitionCalculate(MatchObject *matchObj);
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern);
-
+void regexObject(MatchObject **matchObj,char *text,Node *pattern);
 #endif // Regex_H

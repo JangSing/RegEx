@@ -57,8 +57,8 @@ void tearDown(void)
 }
 
 /**
- *  text    = a1234b
- *  pattern = a\d{5}b
+ *  text    = asas aasas a asasaa a asasasijai sjaijs a
+ *  pattern = a
  *
  */
 void test_testing(void)
@@ -68,16 +68,21 @@ void test_testing(void)
 
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="asas asas asas asasa a";
+  char *str="asas aasas a asasaa a asasasijai sjaijs a";
 
   pattern=nodeA;
-  // addNode(&pattern,nodeDigitExact5);
-  // addNode(&pattern,nodeB);
 
-  matchObj=matchObjectRegEx(matchObj,str,pattern);
-
+  regexObject(&matchObj,str,pattern);
+  
   TEST_ASSERT_NOT_NULL(matchObj->ptr[0]);
+  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
   TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[0]->text);
+  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[1]->text);
+  TEST_ASSERT_EQUAL_STRING("a",matchObj->ptr[2]->text);
   TEST_ASSERT_EQUAL(1,matchObj->ptr[0]->length);
-  TEST_ASSERT_EQUAL(21,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(1,matchObj->ptr[1]->length);
+  TEST_ASSERT_EQUAL(1,matchObj->ptr[2]->length);
+  TEST_ASSERT_EQUAL(11,matchObj->ptr[0]->possition);
+  TEST_ASSERT_EQUAL(20,matchObj->ptr[1]->possition);
+  TEST_ASSERT_EQUAL(40,matchObj->ptr[2]->possition);
 }

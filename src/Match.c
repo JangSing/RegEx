@@ -164,7 +164,3 @@ void checkForExact(MatchObject **matchObj,Node **pattern,int *j,int *count,int b
     *count=0;
   }
 }
-
-
-
-
