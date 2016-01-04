@@ -24,40 +24,40 @@ Match *createMatch(){
   return match;
 }
 
-void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i){
-  if(*(text+(*i))!=32){
-    (*matchObj)->match=0;
-  }
-  checkMatches(matchObj,match,*i);
-  while(*(text+(*i))!=0 ){
-    int matchNo=(*matchObj)->numOfMatch;
-    if(*(text+(*i))==32 ){
-      (*matchObj)=matchObjectRegEx((*matchObj),text+(*i)+1,startPattern);
-      if( *(text+(*i)+1)!=0 && (*matchObj)->ptr[matchNo]!=NULL){
-        ((*matchObj)->ptr[matchNo]->possition)+=(*i)+1;
-      }
-      break;
-    }
-    (*i)++;
-  }
-}
+// void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i){
+  // if(*(text+(*i))!=32){
+    // (*matchObj)->match=0;
+  // }
+  // checkMatches(matchObj,match,*i);
+  // while(*(text+(*i))!=0 ){
+    // int matchNo=(*matchObj)->numOfMatch;
+    // if(*(text+(*i))==32 ){
+      // (*matchObj)=matchObjectRegEx((*matchObj),text+(*i)+1,startPattern);
+      // if( *(text+(*i)+1)!=0 && (*matchObj)->ptr[matchNo]!=NULL){
+        // ((*matchObj)->ptr[matchNo]->possition)+=(*i)+1;
+      // }
+      // break;
+    // }
+    // (*i)++;
+  // }
+// }
 
-MatchObject *possitionCalculate(MatchObject *matchObj){
-  int index=0;
+// MatchObject *possitionCalculate(MatchObject *matchObj){
+  // int index=0;
 
-  if(matchObj->ptr[index]!=NULL){
-    while(matchObj->ptr[index+1]!=NULL){
-      matchObj->ptr[index+1]->possition+=matchObj->ptr[index]->possition;
-      index++;
-    }
-  }
-  return matchObj;
-}
+  // if(matchObj->ptr[index]!=NULL){
+    // while(matchObj->ptr[index+1]!=NULL){
+      // matchObj->ptr[index+1]->possition+=matchObj->ptr[index]->possition;
+      // index++;
+    // }
+  // }
+  // return matchObj;
+// }
 
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
   if(text==NULL || pattern==NULL)
     return NULL;
-  Match *match=createMatch();
+  Match *match;
   // i=>textIndex j=>matchTextIndex
   int i=0;int j=0;
   int count=0;
@@ -65,11 +65,11 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
   Node *startPattern=pattern;
   while(1){
     if(pattern==NULL){
-      if(*(text+i)!=0)
-        endOfTextOrSpace(&matchObj,&match,text,startPattern,&i);
-      else
-        checkMatches(&matchObj,&match,i);
-      break;
+      checkMatches(&matchObj,&match,i,&j);
+      pattern=startPattern;
+      if(*(text+i)==0){
+        break;
+      }
     }
     else {
       if(*(text+i)!=0){
@@ -102,21 +102,28 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
             count++;
           i++;
         }while(pattern->attribute!=0);
+
+        if(matchObj->match)
+          pattern=pattern->next;
+        else{
+          pattern=startPattern;
+          j=0;
+        }
       }
       else{
         j=0;
         matchObj->match=0;
+        break;
       }
     }
-    pattern=pattern->next;
   }
   return matchObj;
 }
 
-void regexObject(MatchObject **matchObj,char *text,Node *pattern){
-  *matchObj=matchObjectRegEx(*matchObj,text,pattern);
-  *matchObj=possitionCalculate(*matchObj);
-}
+// void regexObject(MatchObject **matchObj,char *text,Node *pattern){
+  // *matchObj=matchObjectRegEx(*matchObj,text,pattern);
+  // *matchObj=possitionCalculate(*matchObj);
+// }
 
 
 

@@ -8,12 +8,15 @@ void matchDigit(MatchObject **matchObj,Match **match,char *text,int i,int *j){
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
 
   if(*(text+i)>=48 && *(text+i)<=57){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -24,12 +27,15 @@ void matchCapAlpha(MatchObject **matchObj,Match **match,char *text,int i,int *j)
   if(*matchObj==NULL || *match==NULL || text==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)>=65 && *(text+i)<=90){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -40,12 +46,15 @@ void matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int *j){
   if(*matchObj==NULL || *match==NULL || text==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)>=97 && *(text+i)<=122){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -56,12 +65,15 @@ void matchWord(MatchObject **matchObj,Match **match,char *text,int i,int *j){
   if(*matchObj==NULL || *match==NULL || text==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if( (*(text+i)>=48 && *(text+i)<=57) || (*(text+i)>=65 && *(text+i)<=90) || (*(text+i)>=97 && *(text+i)<=122)){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -72,12 +84,15 @@ void matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int *j){
   if(*matchObj==NULL || *match==NULL || text==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text cannot be NULL.");
   if(*(text+i)==32){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -88,12 +103,15 @@ void matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int
   if(*matchObj==NULL || *match==NULL || pattern ==NULL)
     throwError(ERR_NULL_NODE,"matchObj/match/text/pattern cannot be NULL.");
   if(*(text+i)==pattern->data){
-    if(*j==0)
+    if(*j==0){
+      (*match)=createMatch();
       (*match)->possition=i;
+    }
     (*match)->text[*j]=text[i];
     (*match)->text[(*j)+1]=0;
     (*matchObj)->match=1;
     (*j)++;
+    (*match)->length=*j;
   }
   else{
     (*matchObj)->match=0;
@@ -101,9 +119,8 @@ void matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int
 
 }
 
-void checkMatches(MatchObject **matchObj,Match **match,int i){
+void checkMatches(MatchObject **matchObj,Match **match,int i,int *j){
   if((*matchObj)->match){
-    (*match)->length=i;
     (*matchObj)->numOfMatch++;
     (*matchObj)->ptr[(*matchObj)->numOfMatch-1] = *match;
     (*matchObj)->ptr[(*matchObj)->numOfMatch]   = NULL;
@@ -111,14 +128,13 @@ void checkMatches(MatchObject **matchObj,Match **match,int i){
   else{
     (*matchObj)->ptr[(*matchObj)->numOfMatch]= NULL;
   }
+  *j=0;
+  (*matchObj)->match=0;
 }
 
 void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count){
   if(*count==0){
     *j=0;
-    while((*pattern)->next!=NULL){
-      *pattern=(*pattern)->next;
-    }
   }
   else{
     (*matchObj)->match=1;
@@ -129,9 +145,6 @@ void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count){
 void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count){
   if(*count>1){
     *j=0;
-    while((*pattern)->next!=NULL){
-      *pattern=(*pattern)->next;
-    }
   }
   else{
     (*matchObj)->match=1;
@@ -142,9 +155,6 @@ void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count){
 void checkForRange(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin,int end){
   if(*count<begin || *count>end){
     *j=0;
-    while((*pattern)->next!=NULL){
-      *pattern=(*pattern)->next;
-    }
   }
   else{
     (*matchObj)->match=1;
@@ -155,9 +165,6 @@ void checkForRange(MatchObject **matchObj,Node **pattern,int *j,int *count,int b
 void checkForExact(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin){
   if(*count!=begin){
     *j=0;
-    while((*pattern)->next!=NULL){
-      *pattern=(*pattern)->next;
-    }
   }
   else{
     (*matchObj)->match=1;

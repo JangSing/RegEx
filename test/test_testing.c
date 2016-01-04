@@ -57,28 +57,28 @@ void tearDown(void)
 {
 }
 
-/**
- *  text    = asas aasas a asasaa a asasasijai sjaijs a
- *  pattern = a
- *
- */
-void test_testing(void)
-{
-  Node *pattern=NULL;
+// /**
+ // *  text    = asas aasas a asasaa a asasasijai sjaijs a
+ // *  pattern = a
+ // *
+ // */
+// void test_testing(void)
+// {
+  // Node *pattern=NULL;
 
 
-  MatchObject *matchObj=createMatchObj();
-  int i;
-  char *str="asas aasas a asasaa a asasij";
+  // MatchObject *matchObj=createMatchObj();
+  // int i;
+  // char *str="asas aasas a asasaa a asasij";
 
-  pattern=nodeA;
+  // pattern=nodeA;
 
-  regexObject(&matchObj,str,pattern);
+  // regexObject(&matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
-  TEST_ASSERT_MATCH(0,"a",1,11,matchObj);
-  TEST_ASSERT_MATCH(1,"a",1,20,matchObj);
-  TEST_ASSERT_NULL(matchObj->ptr[2]);
-}
+  // TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
+  // TEST_ASSERT_MATCH(0,"a",1,11,matchObj);
+  // TEST_ASSERT_MATCH(1,"a",1,20,matchObj);
+  // TEST_ASSERT_NULL(matchObj->ptr[2]);
+// }
 
 

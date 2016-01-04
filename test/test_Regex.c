@@ -66,14 +66,13 @@ void test_Regex_given_text_not_matches_digit_pattern_should_return_NULL_matches(
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a";
 
   pattern=nodeDigit;
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -87,17 +86,16 @@ void test_Regex_given_text_matches_WORD_pattern_should_return_matchObj(void)
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a";
 
   pattern=nodeWord;
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a",1,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -110,7 +108,6 @@ void test_Regex_given_text_matches_pattern_should_return_matched_text(void)
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -118,10 +115,10 @@ void test_Regex_given_text_matches_pattern_should_return_matched_text(void)
   pattern=nodeWord;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -134,7 +131,6 @@ void test_Regex_given_text_not_matches_pattern_should_return_NULL_match(void)
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="aa";
@@ -142,7 +138,7 @@ void test_Regex_given_text_not_matches_pattern_should_return_NULL_match(void)
   pattern=nodeWord;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -156,7 +152,6 @@ void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -166,7 +161,7 @@ void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
   addNode(&pattern,nodeDigit1);
 
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -176,10 +171,9 @@ void test_Regex_given_pattern_longer_than_text_should_return_NULL_match(void)
  *  pattern = \w\d
  *
  */
-void test_Regex_given_text_longer_than_pattern_should_return_NULL_match(void)
+void test_Regex_given_two_matches_without_space_should_return_two_matches(void)
 {
   Node *pattern=NULL;
-
 
   MatchObject *matchObj=createMatchObj();
   int i;
@@ -187,10 +181,11 @@ void test_Regex_given_text_longer_than_pattern_should_return_NULL_match(void)
 
   pattern=nodeWord;
   addNode(&pattern,nodeDigit);
-
-  regexObject(&matchObj,str,pattern);
-
-  TEST_ASSERT_NULL(matchObj->ptr[0]);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_MATCH(1,"23",2,2,matchObj);
+  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[2]);
 }
 
 /**
@@ -211,10 +206,10 @@ void test_Regex_given_text_longer_than_pattern_with_only_space_should_return_NUL
   pattern=nodeWord;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -227,7 +222,6 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1 a2";
@@ -235,11 +229,11 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
   pattern=nodeWord1;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
   TEST_ASSERT_MATCH(1,"a2",2,3,matchObj);
+  TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[2]);
 }
 
@@ -252,7 +246,6 @@ void test_Regex_given_before_space_not_match_after_space_matches_should_return_m
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="aa a2";
@@ -260,10 +253,10 @@ void test_Regex_given_before_space_not_match_after_space_matches_should_return_m
   pattern=nodeWord;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a2",2,3,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -276,7 +269,6 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1";
@@ -284,10 +276,10 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
   pattern=nodeA;
   addNode(&pattern,nodeDigit);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -300,7 +292,6 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_multiples_digits_s
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a111b";
@@ -309,10 +300,10 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_multiples_digits_s
   addNode(&pattern,nodeDigitAst);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a111b",5,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -325,7 +316,6 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="ab";
@@ -334,10 +324,10 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
   addNode(&pattern,nodeDigitAst);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"ab",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -350,7 +340,6 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1a1b";
@@ -359,7 +348,7 @@ void test_Regex_given_attribute_asterisk_pattern_compare_with_not_digit_should_c
   addNode(&pattern,nodeDigitAst);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -382,10 +371,10 @@ void test_Regex_given_attribute_plus_pattern_compare_with_multiples_digits_shoul
   addNode(&pattern,nodeDigitPlus);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a111b",5,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -398,7 +387,6 @@ void test_Regex_given_attribute_plus_pattern_compare_with_not_digits_should_retu
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="ab";
@@ -407,7 +395,7 @@ void test_Regex_given_attribute_plus_pattern_compare_with_not_digits_should_retu
   addNode(&pattern,nodeDigitPlus);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -421,7 +409,6 @@ void test_Regex_given_attribute_question_pattern_compare_with_not_digits_should_
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="ab";
@@ -430,10 +417,10 @@ void test_Regex_given_attribute_question_pattern_compare_with_not_digits_should_
   addNode(&pattern,nodeDigitQuest);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"ab",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -446,7 +433,6 @@ void test_Regex_given_attribute_question_pattern_compare_with_more_than_one_digi
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a11b";
@@ -455,7 +441,7 @@ void test_Regex_given_attribute_question_pattern_compare_with_more_than_one_digi
   addNode(&pattern,nodeDigitQuest);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
@@ -469,7 +455,6 @@ void test_Regex_given_pattern_with_digit_attribute_range_count_number_within_ran
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a1234b";
@@ -478,10 +463,10 @@ void test_Regex_given_pattern_with_digit_attribute_range_count_number_within_ran
   addNode(&pattern,nodeDigit0to5);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a1234b",6,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
@@ -494,7 +479,6 @@ void test_Regex_given_pattern_with_digit_attribute_range_count_number_not_within
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a123456b";
@@ -503,7 +487,7 @@ void test_Regex_given_pattern_with_digit_attribute_range_count_number_not_within
   addNode(&pattern,nodeDigit0to5);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_NULL(matchObj->ptr[0]);
 
@@ -518,7 +502,6 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
   char *str="a12345b";
@@ -527,58 +510,40 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
   addNode(&pattern,nodeDigitExact5);
   addNode(&pattern,nodeB);
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_MATCH(0,"a12345b",7,0,matchObj);
-  TEST_ASSERT_NULL(matchObj->ptr[1]);
-}
-
-/**
- *  text    = asas asas asas asasa a
- *  pattern = a
- *
- */
-void test_Regex_given_text_matches_pattern_should_return_correct_possition_and_matches_length(void)
-{
-  Node *pattern=NULL;
-
-
-  MatchObject *matchObj=createMatchObj();
-  int i;
-  char *str="aaaa aaaa aaaa aaaa a";
-
-  pattern=nodeA;
-
-  regexObject(&matchObj,str,pattern);
-
   TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
-  TEST_ASSERT_MATCH(0,"a",1,20,matchObj);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
 /**
- *  text    = asas aasas a asasaa a asasasijai sjaijs a
+ *  text    = asas asas asas asas a
  *  pattern = a
  *
  */
-void test_Regex_given_text_matches_pattern_multiple_times_should_return_correct_possition_lenght_and_text(void)
+void test_Regex_given_text_matches_pattern_should_return_correct_possition(void)
 {
   Node *pattern=NULL;
 
-
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="asas aasas a asasaa a asasasijai sjaijs a";
+  char *str="asas asas asas asas a";
 
   pattern=nodeA;
 
-  regexObject(&matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
-  TEST_ASSERT_MATCH(0,"a",1,11,matchObj);
-  TEST_ASSERT_MATCH(1,"a",1,20,matchObj);
-  TEST_ASSERT_MATCH(2,"a",1,40,matchObj);
-  TEST_ASSERT_NULL(matchObj->ptr[3]);
+  TEST_ASSERT_MATCH(0,"a",1,0,matchObj);
+  TEST_ASSERT_MATCH(1,"a",1,2,matchObj);
+  TEST_ASSERT_MATCH(2,"a",1,5,matchObj);
+  TEST_ASSERT_MATCH(3,"a",1,7,matchObj);
+  TEST_ASSERT_MATCH(4,"a",1,10,matchObj);
+  TEST_ASSERT_MATCH(5,"a",1,12,matchObj);
+  TEST_ASSERT_MATCH(6,"a",1,15,matchObj);
+  TEST_ASSERT_MATCH(7,"a",1,17,matchObj);
+  TEST_ASSERT_MATCH(8,"a",1,20,matchObj);
+  TEST_ASSERT_EQUAL(9,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[9]);
 }
 

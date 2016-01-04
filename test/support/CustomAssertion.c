@@ -19,7 +19,7 @@ void customTestMatches(int matchIndex,char *text,int length,int possition,MatchO
       if(length != actualMatch->ptr[matchIndex]->length)
         CUSTOM_TEST_FAIL("For match Element No.%d,Expected length %d Was %d.",matchIndex,length,actualMatch->ptr[matchIndex]->length);
       if(possition != actualMatch->ptr[matchIndex]->possition)
-        CUSTOM_TEST_FAIL("For match Element No.%d,Expected possition %d Was %d.",matchIndex,length,actualMatch->ptr[matchIndex]->possition);
+        CUSTOM_TEST_FAIL("For match Element No.%d,Expected possition %d Was %d.",matchIndex,possition,actualMatch->ptr[matchIndex]->possition);
     }
   }
 }
