@@ -238,29 +238,6 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
 }
 
 /**
- *  text    = aa a2
- *  pattern = \w\d
- *
- */
-void test_Regex_given_before_space_not_match_after_space_matches_should_return_matchObj(void)
-{
-  Node *pattern=NULL;
-
-  MatchObject *matchObj=createMatchObj();
-  int i;
-  char *str="aa a2";
-
-  pattern=nodeWord;
-  addNode(&pattern,nodeDigit);
-
-  matchObj=matchObjectRegEx(matchObj,str,pattern);
-
-  TEST_ASSERT_MATCH(0,"a2",2,3,matchObj);
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
-  TEST_ASSERT_NULL(matchObj->ptr[1]);
-}
-
-/**
  *  text    = a1
  *  pattern = a\d
  *
@@ -284,11 +261,64 @@ void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_
 }
 
 /**
+ *  text    = asas asas asas asas a
+ *  pattern = a
+ *
+ */
+void test_Regex_given_text_matches_pattern_should_return_correct_possition(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="asas asas asas asas a";
+
+  pattern=nodeA;
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_MATCH(0,"a",1,0,matchObj);
+  TEST_ASSERT_MATCH(1,"a",1,2,matchObj);
+  TEST_ASSERT_MATCH(2,"a",1,5,matchObj);
+  TEST_ASSERT_MATCH(3,"a",1,7,matchObj);
+  TEST_ASSERT_MATCH(4,"a",1,10,matchObj);
+  TEST_ASSERT_MATCH(5,"a",1,12,matchObj);
+  TEST_ASSERT_MATCH(6,"a",1,15,matchObj);
+  TEST_ASSERT_MATCH(7,"a",1,17,matchObj);
+  TEST_ASSERT_MATCH(8,"a",1,20,matchObj);
+  TEST_ASSERT_EQUAL(9,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[9]);
+}
+
+/**
+ *  text    = a111
+ *  pattern = a\d*
+ *
+ */
+void test_Regex_given_attribute_asterisk_digit_pattern_compare_with_multiples_digits_should_return_matchObj(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="a111";
+
+  pattern=nodeA;
+  addNode(&pattern,nodeDigitAst);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_MATCH(0,"a111",4,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
+}
+
+/**
  *  text    = a111b
  *  pattern = a\d*b
  *
  */
-void test_Regex_given_attribute_asterisk_pattern_compare_with_multiples_digits_should_return_matchObj(void)
+void test_Regex_given_attribute_asterisk_digit_pattern_compare_with_multiples_digits_and_alphaB_should_return_matchObj(void)
 {
   Node *pattern=NULL;
 
@@ -517,33 +547,5 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
-/**
- *  text    = asas asas asas asas a
- *  pattern = a
- *
- */
-void test_Regex_given_text_matches_pattern_should_return_correct_possition(void)
-{
-  Node *pattern=NULL;
 
-  MatchObject *matchObj=createMatchObj();
-  int i;
-  char *str="asas asas asas asas a";
-
-  pattern=nodeA;
-
-  matchObj=matchObjectRegEx(matchObj,str,pattern);
-
-  TEST_ASSERT_MATCH(0,"a",1,0,matchObj);
-  TEST_ASSERT_MATCH(1,"a",1,2,matchObj);
-  TEST_ASSERT_MATCH(2,"a",1,5,matchObj);
-  TEST_ASSERT_MATCH(3,"a",1,7,matchObj);
-  TEST_ASSERT_MATCH(4,"a",1,10,matchObj);
-  TEST_ASSERT_MATCH(5,"a",1,12,matchObj);
-  TEST_ASSERT_MATCH(6,"a",1,15,matchObj);
-  TEST_ASSERT_MATCH(7,"a",1,17,matchObj);
-  TEST_ASSERT_MATCH(8,"a",1,20,matchObj);
-  TEST_ASSERT_EQUAL(9,matchObj->numOfMatch);
-  TEST_ASSERT_NULL(matchObj->ptr[9]);
-}
 
