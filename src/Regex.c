@@ -22,6 +22,75 @@ Match *createMatch(){
   return match;
 }
 
+void attributeSelect(MatchObject **matchObj,Node *pattern,int *j,int *count){
+  switch(pattern->attribute){
+    case ATT_ASTERISK :(*matchObj)->match=1;count=0;break;
+    case ATT_PLUS     :checkForOneOrMore(matchObj,j,count);break;
+    case ATT_QUESTION :checkForZeroOrOne(matchObj,j,count);break;
+    case ATT_RANGE    :checkForRange(matchObj,j,count,pattern->begin,pattern->end);break;
+    case ATT_EXACT    :checkForExact(matchObj,j,count,pattern->begin);break;
+    default           :break;
+  }
+}
+
+MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
+  if(text==NULL || pattern==NULL)
+    return NULL;
+  Match *match;
+  int retryEn=0;int firstRetry=1;
+  // i=>textIndex j=>matchTextIndex
+  int i=0;int j=0;int patternIndex=0;
+  int retryAnchor=0;int matchAnchor=0;
+  int count=0;
+  Node *startPattern=pattern;Node *retryPattern;
+
+  while(1){
+    if(pattern==NULL){
+      checkMatches(&matchObj,&match,i,&j);
+      pattern=startPattern;
+      if(*(text+i)==0){
+        break;
+      }
+    }
+    else {
+      if(*(text+i)!=0){
+        do{
+          matchEle(&matchObj,&match,text,pattern,i,&j);
+          if(!matchObj->match && pattern->attribute!=0){
+            attributeSelect(&matchObj,pattern,&j,&count);
+            break;
+          }
+          if(pattern->attribute!=0)
+            count++;
+          i++;
+        }while(pattern->attribute!=0);
+
+        if(matchObj->match){
+          patternIndex=0;
+          pattern=pattern->next[patternIndex];
+        }
+        else{
+          pattern=startPattern;
+          j=0;
+        }
+
+
+      }
+      else{
+        j=0;
+        matchObj->match=0;
+        break;
+      }
+    }
+  }
+  return matchObj;
+}
+
+// void regexObject(MatchObject **matchObj,char *text,Node *pattern){
+  // *matchObj=matchObjectRegEx(*matchObj,text,pattern);
+  // *matchObj=possitionCalculate(*matchObj);
+// }
+
 // void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i){
   // if(*(text+(*i))!=32){
     // (*matchObj)->match=0;
@@ -51,77 +120,3 @@ Match *createMatch(){
   // }
   // return matchObj;
 // }
-
-MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
-  if(text==NULL || pattern==NULL)
-    return NULL;
-  Match *match;
-  // i=>textIndex j=>matchTextIndex
-  int i=0;int j=0;
-  int count=0;
-
-  Node *startPattern=pattern;
-  while(1){
-    if(pattern==NULL){
-      checkMatches(&matchObj,&match,i,&j);
-      pattern=startPattern;
-      if(*(text+i)==0){
-        break;
-      }
-    }
-    else {
-      if(*(text+i)!=0){
-        do{
-          if(pattern->data<0xFF){
-            matchText(&matchObj,&match,text,pattern,i,&j);
-          }
-          else{
-            switch(pattern->data){
-              case DIGIT      :matchDigit(&matchObj,&match,text,i,&j);break;
-              case CAP_ALPHA  :matchCapAlpha(&matchObj,&match,text,i,&j);break;
-              case ALPHA      :matchAlpha(&matchObj,&match,text,i,&j);break;
-              case WORD       :matchWord(&matchObj,&match,text,i,&j);break;
-              case SPACE      :matchSpace(&matchObj,&match,text,i,&j);break;
-              default         :throwError(ERR_UNKNOWN_TYPE,"unknown data type.");break;
-            }
-          }
-          if(!matchObj->match && pattern->attribute!=0){
-            switch(pattern->attribute){
-              case ATT_ASTERISK :matchObj->match=1;count=0;break;
-              case ATT_PLUS     :checkForOneOrMore(&matchObj,&pattern,&j,&count);break;
-              case ATT_QUESTION :checkForZeroOrOne(&matchObj,&pattern,&j,&count);break;
-              case ATT_RANGE    :checkForRange(&matchObj,&pattern,&j,&count,pattern->begin,pattern->end);break;
-              case ATT_EXACT    :checkForExact(&matchObj,&pattern,&j,&count,pattern->begin);break;
-              default           :break;
-            }
-            break;
-          }
-          if(pattern->attribute!=0)
-            count++;
-          i++;
-        }while(pattern->attribute!=0);
-
-        if(matchObj->match)
-          pattern=pattern->next[0];
-        else{
-          pattern=startPattern;
-          j=0;
-        }
-      }
-      else{
-        j=0;
-        matchObj->match=0;
-        break;
-      }
-    }
-  }
-  return matchObj;
-}
-
-// void regexObject(MatchObject **matchObj,char *text,Node *pattern){
-  // *matchObj=matchObjectRegEx(*matchObj,text,pattern);
-  // *matchObj=possitionCalculate(*matchObj);
-// }
-
-
-

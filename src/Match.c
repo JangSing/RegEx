@@ -120,6 +120,23 @@ void matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int
 
 }
 
+void matchEle(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int *j){
+  if(pattern->data<0xFF){
+    matchText(matchObj,match,text,pattern,i,j);
+  }
+  else{
+    switch(pattern->data){
+      case DIGIT      :matchDigit(matchObj,match,text,i,j);break;
+      case CAP_ALPHA  :matchCapAlpha(matchObj,match,text,i,j);break;
+      case ALPHA      :matchAlpha(matchObj,match,text,i,j);break;
+      case WORD       :matchWord(matchObj,match,text,i,j);break;
+      case SPACE      :matchSpace(matchObj,match,text,i,j);break;
+      default         :throwError(ERR_UNKNOWN_TYPE,"unknown data type.");break;
+    }
+  }
+}
+
+
 void checkMatches(MatchObject **matchObj,Match **match,int i,int *j){
   if((*matchObj)->match){
     (*matchObj)->numOfMatch++;
@@ -133,7 +150,7 @@ void checkMatches(MatchObject **matchObj,Match **match,int i,int *j){
   (*matchObj)->match=0;
 }
 
-void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count){
+void checkForOneOrMore(MatchObject **matchObj,int *j,int *count){
   if(*count==0){
     *j=0;
   }
@@ -143,7 +160,7 @@ void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count){
   }
 }
 
-void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count){
+void checkForZeroOrOne(MatchObject **matchObj,int *j,int *count){
   if(*count>1){
     *j=0;
   }
@@ -153,7 +170,7 @@ void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count){
   }
 }
 
-void checkForRange(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin,int end){
+void checkForRange(MatchObject **matchObj,int *j,int *count,int begin,int end){
   if(*count<begin || *count>end){
     *j=0;
   }
@@ -163,7 +180,7 @@ void checkForRange(MatchObject **matchObj,Node **pattern,int *j,int *count,int b
   }
 }
 
-void checkForExact(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin){
+void checkForExact(MatchObject **matchObj,int *j,int *count,int begin){
   if(*count!=begin){
     *j=0;
   }

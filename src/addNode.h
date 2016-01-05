@@ -2,7 +2,7 @@
 #define Avl_H
 #include "Node.h"
 
-void addNode(Node **rootPtr,Node *newNode);
+void addNode(Node **currentNode,int index,Node *newNode);
 
 
 

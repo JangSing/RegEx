@@ -9,10 +9,11 @@ void matchAlpha(MatchObject **matchObj,Match **match,char *text,int i,int *j);
 void matchWord(MatchObject **matchObj,Match **match,char *text,int i,int *j);
 void matchSpace(MatchObject **matchObj,Match **match,char *text,int i,int *j);
 void matchText(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int *j);
+void matchEle(MatchObject **matchObj,Match **match,char *text,Node *pattern,int i,int *j);
 void checkMatches(MatchObject **matchObj,Match **match,int i,int *j);
-void checkForOneOrMore(MatchObject **matchObj,Node **pattern,int *j,int *count);
-void checkForZeroOrOne(MatchObject **matchObj,Node **pattern,int *j,int *count);
-void checkForRange(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin,int end);
-void checkForExact(MatchObject **matchObj,Node **pattern,int *j,int *count,int begin);
+void checkForOneOrMore(MatchObject **matchObj,int *j,int *count);
+void checkForZeroOrOne(MatchObject **matchObj,int *j,int *count);
+void checkForRange(MatchObject **matchObj,int *j,int *count,int begin,int end);
+void checkForExact(MatchObject **matchObj,int *j,int *count,int begin);
 
 #endif // Match_H
