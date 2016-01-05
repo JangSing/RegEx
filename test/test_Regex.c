@@ -27,13 +27,13 @@ Node  *nodeB;
 Node  *nodeC;
 
 Node *resetNode(int pattern,int attribute,int begin,int end){
-  Node *node=malloc(sizeof(Node));
+  Node *node=malloc(sizeof(Node)*2);
 
   node->data = pattern;
   node->attribute = attribute;
   node->begin=begin;
   node->end=end;
-  node->next =NULL;
+  node->next[0] =NULL;
 }
 
 void setUp(void){
@@ -56,6 +56,8 @@ void setUp(void){
 void tearDown(void)
 {
 }
+
+
 
 /**
  *  text    = a
@@ -238,29 +240,6 @@ void test_Regex_given_text_longer_than_pattern_with_after_space_still_have_text_
 }
 
 /**
- *  text    = a1
- *  pattern = a\d
- *
- */
-void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_matchObj(void)
-{
-  Node *pattern=NULL;
-
-  MatchObject *matchObj=createMatchObj();
-  int i;
-  char *str="a1";
-
-  pattern=nodeA;
-  addNode(&pattern,nodeDigit);
-
-  matchObj=matchObjectRegEx(matchObj,str,pattern);
-
-  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
-  TEST_ASSERT_NULL(matchObj->ptr[1]);
-}
-
-/**
  *  text    = asas asas asas asas a
  *  pattern = a
  *
@@ -289,6 +268,33 @@ void test_Regex_given_text_matches_pattern_should_return_correct_possition(void)
   TEST_ASSERT_EQUAL(9,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[9]);
 }
+
+/**
+ *  text    = a1
+ *  pattern = a\d
+ *
+ */
+void test_Regex_given_pattern_with_alpha_a_and_digit_matches_text_should_return_matchObj(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="a1";
+
+  pattern=nodeA;
+  addNode(&pattern,nodeDigit);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_MATCH(0,"a1",2,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
+
+
+}
+
+
 
 /**
  *  text    = a111

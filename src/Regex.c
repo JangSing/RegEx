@@ -5,10 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define ptrIndex  (matchObj->numOfMatch)-1
-
 MatchObject *createMatchObj(){
-  MatchObject *matchObj=malloc(sizeof(MatchObject)+sizeof(Match)+sizeof(char));
+  MatchObject *matchObj=malloc(sizeof(MatchObject)+sizeof(Match)+sizeof(char)+sizeof(Node));
 
   matchObj->match=0;
   matchObj->numOfMatch=0;
@@ -104,7 +102,7 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
         }while(pattern->attribute!=0);
 
         if(matchObj->match)
-          pattern=pattern->next;
+          pattern=pattern->next[0];
         else{
           pattern=startPattern;
           j=0;

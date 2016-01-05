@@ -27,13 +27,13 @@ Node  *nodeB;
 Node  *nodeC;
 
 Node *resetNode(int pattern,int attribute,int begin,int end){
-  Node *node=malloc(sizeof(Node));
+  Node *node=malloc(sizeof(Node)*2);
 
   node->data = pattern;
   node->attribute = attribute;
   node->begin=begin;
   node->end=end;
-  node->next =NULL;
+  node->next[0] =NULL;
 }
 
 void setUp(void){
@@ -73,7 +73,7 @@ void tearDown(void)
 
   // pattern=nodeA;
 
-  // regexObject(&matchObj,str,pattern);
+  // matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   // TEST_ASSERT_EQUAL(2,matchObj->numOfMatch);
   // TEST_ASSERT_MATCH(0,"a",1,11,matchObj);

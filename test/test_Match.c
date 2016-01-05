@@ -8,11 +8,11 @@
 Node *nodeA;
 
 Node *resetNode(int pattern,int attribute){
-  Node *node=malloc(sizeof(Node));
+  Node *node=malloc(sizeof(Node)*2);
 
   node->data = pattern;
   node->attribute = attribute;
-  node->next =NULL;
+  node->next[0] =NULL;
 }
 
 void setUp(void)
@@ -47,13 +47,16 @@ void test_match_Digit_function_given_text_is_not_digit_should_give_0_to_match_in
   char *text="a";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchDigit(&matchObj,&match,text,i,&j);
 
   TEST_ASSERT_NOT_NULL(matchObj);
   TEST_ASSERT_EQUAL(0,matchObj->match);
   TEST_ASSERT_EQUAL(0,j);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Digit_function_given_text_is_digit_should_store_to_match_structure(void)
@@ -62,7 +65,7 @@ void test_match_Digit_function_given_text_is_digit_should_store_to_match_structu
   char *text="1";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchDigit(&matchObj,&match,text,i,&j);
 
@@ -72,6 +75,9 @@ void test_match_Digit_function_given_text_is_digit_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("1",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Cap_Alpha_function_given_text_is_Cap_Alpha_should_store_to_match_structure(void)
@@ -80,7 +86,7 @@ void test_match_Cap_Alpha_function_given_text_is_Cap_Alpha_should_store_to_match
   char *text="A";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchCapAlpha(&matchObj,&match,text,i,&j);
 
@@ -90,6 +96,9 @@ void test_match_Cap_Alpha_function_given_text_is_Cap_Alpha_should_store_to_match
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("A",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Alpha_function_given_text_is_Alpha_should_store_to_match_structure(void)
@@ -98,7 +107,7 @@ void test_match_Alpha_function_given_text_is_Alpha_should_store_to_match_structu
   char *text="a";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchAlpha(&matchObj,&match,text,i,&j);
 
@@ -108,6 +117,9 @@ void test_match_Alpha_function_given_text_is_Alpha_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Word_function_given_text_is_Word_should_store_to_match_structure(void)
@@ -116,7 +128,7 @@ void test_match_Word_function_given_text_is_Word_should_store_to_match_structure
   char *text="a";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchWord(&matchObj,&match,text,i,&j);
 
@@ -126,6 +138,9 @@ void test_match_Word_function_given_text_is_Word_should_store_to_match_structure
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Space_function_given_text_is_Space_should_store_to_match_structure(void)
@@ -134,7 +149,7 @@ void test_match_Space_function_given_text_is_Space_should_store_to_match_structu
   char *text=" ";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchSpace(&matchObj,&match,text,i,&j);
 
@@ -144,6 +159,9 @@ void test_match_Space_function_given_text_is_Space_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING(" ",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 void test_match_Text_function_given_text_is_Text_should_store_to_match_structure(void)
@@ -153,7 +171,7 @@ void test_match_Text_function_given_text_is_Text_should_store_to_match_structure
   char *text="a";
 
   MatchObject *matchObj=createMatchObj();
-  Match *match=createMatch();
+  Match *match;
 
 	matchText(&matchObj,&match,text,pattern,i,&j);
 
@@ -163,6 +181,9 @@ void test_match_Text_function_given_text_is_Text_should_store_to_match_structure
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
+  
+  free(matchObj);
+  free(match);
 }
 
 

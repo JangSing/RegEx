@@ -7,7 +7,7 @@ struct Node_t{
   int   attribute;
   int   begin;
   int   end;
-  Node  *next;
+  Node  *next[];
 };
 
 #endif // Node_H
