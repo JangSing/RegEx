@@ -560,35 +560,35 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
   TEST_ASSERT_NULL(matchObj->ptr[1]);
 }
 
-// /**
- // *  text    = abe
- // *  pattern = a[bcd]e
- // *
- // *           --> b -
- // *         /        \
- // *        a --> c --> d
- // *         \        /
- // *          --> d -
- // */
-// void test_Regex_given_pattern_with_multiples_branches_one_of_the_branches_matches_text_should_return_matchObj(void)
-// {
-  // Node *pattern=NULL;
+/**
+ *  text    = abe
+ *  pattern = a[bcd]e
+ *
+ *           --> b -
+ *         /        \
+ *        a --> c --> e
+ *         \        /
+ *          --> d -
+ */
+void test_Regex_given_pattern_with_multiples_branches_one_of_the_branches_matches_text_should_return_matchObj(void)
+{
+  Node *pattern=NULL;
 
-  // MatchObject *matchObj=createMatchObj();
-  // int i;
-  // char *str="ace";
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="ade";
 
-  // pattern=nodeA;
-  // addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
-  // addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
-  // addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
+  pattern=nodeA;
+  addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
+  addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
+  addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
 
-  // matchObj=matchObjectRegEx(matchObj,str,pattern);
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  // TEST_ASSERT_MATCH(0,"abe",3,0,matchObj);
-  // TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
-  // TEST_ASSERT_NULL(matchObj->ptr[1]);
-// }
+  TEST_ASSERT_MATCH(0,"ade",3,0,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[1]);
+}
 
 
 

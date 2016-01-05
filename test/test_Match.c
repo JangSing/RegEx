@@ -35,7 +35,7 @@ void test_match_Digit_function_given_element_passing_into_function_is_NULL(void)
   Try{
     matchDigit(&matchObj,&match,text,i,&j);
   }Catch(err){
-    TEST_ASSERT_EQUAL_STRING("matchObj/match/text cannot be NULL.",err->errorMsg);
+    TEST_ASSERT_EQUAL_STRING("matchObj/text cannot be NULL.",err->errorMsg);
     free(err);
   }
 
@@ -54,7 +54,7 @@ void test_match_Digit_function_given_text_is_not_digit_should_give_0_to_match_in
   TEST_ASSERT_NOT_NULL(matchObj);
   TEST_ASSERT_EQUAL(0,matchObj->match);
   TEST_ASSERT_EQUAL(0,j);
-  
+
   free(matchObj);
   free(match);
 }
@@ -75,7 +75,7 @@ void test_match_Digit_function_given_text_is_digit_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("1",match->text);
-  
+
   free(matchObj);
   free(match);
 }
@@ -96,7 +96,7 @@ void test_match_Cap_Alpha_function_given_text_is_Cap_Alpha_should_store_to_match
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("A",match->text);
-  
+
   free(matchObj);
   free(match);
 }
@@ -117,7 +117,7 @@ void test_match_Alpha_function_given_text_is_Alpha_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
-  
+
   free(matchObj);
   free(match);
 }
@@ -138,7 +138,7 @@ void test_match_Word_function_given_text_is_Word_should_store_to_match_structure
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
-  
+
   free(matchObj);
   free(match);
 }
@@ -159,7 +159,7 @@ void test_match_Space_function_given_text_is_Space_should_store_to_match_structu
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING(" ",match->text);
-  
+
   free(matchObj);
   free(match);
 }
@@ -181,7 +181,7 @@ void test_match_Text_function_given_text_is_Text_should_store_to_match_structure
   TEST_ASSERT_EQUAL(1,j);
   TEST_ASSERT_EQUAL(0,match->possition);
   TEST_ASSERT_EQUAL_STRING("a",match->text);
-  
+
   free(matchObj);
   free(match);
 }

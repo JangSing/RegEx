@@ -23,6 +23,8 @@ Match *createMatch(){
 }
 
 void attributeSelect(MatchObject **matchObj,Node *pattern,int *j,int *count){
+  if(*matchObj==NULL || pattern == NULL || j == NULL || count == NULL)
+    throwError(ERR_NULL_NODE,"matchObj/pattern/j/count cannot be NULL.");
   switch(pattern->attribute){
     case ATT_ASTERISK :(*matchObj)->match=1;count=0;break;
     case ATT_PLUS     :checkForOneOrMore(matchObj,j,count);break;
@@ -33,14 +35,42 @@ void attributeSelect(MatchObject **matchObj,Node *pattern,int *j,int *count){
   }
 }
 
+void patternPathDecision(MatchObject *matchObj, Node **pattern,Node *startPattern,Node *retryPattern,
+                                                                  int *patternIndex,int *retryEn,int retryIndex,int *i,int *j){
+
+  if(matchObj==NULL || *pattern==NULL || startPattern==NULL || retryPattern==NULL)
+    throwError(ERR_NULL_NODE,"matchObj/pattern/startPattern/retryPattern cannot be NULL.");
+  if(matchObj->match){
+    if((*pattern)->next[1]==NULL){
+      (*pattern)=(*pattern)->next[0];
+    }
+    else{
+      (*pattern)=(*pattern)->next[*patternIndex];
+    }
+  }
+  else{
+    if(*retryEn){
+      (*pattern)=retryPattern;
+      (*j)--;
+      (*i)=retryIndex;
+      (*patternIndex)++;
+      *retryEn=0;
+    }
+    else{
+      (*pattern)=startPattern;
+      *j=0;
+    }
+  }
+}
+
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
-  if(text==NULL || pattern==NULL)
+  if(matchObj==NULL || text==NULL || pattern==NULL)
     return NULL;
   Match *match;
   int retryEn=0;int firstRetry=1;
   // i=>textIndex j=>matchTextIndex
   int i=0;int j=0;int patternIndex=0;
-  int retryAnchor=0;int matchAnchor=0;
+  int retryIndex=0;
   int count=0;
   Node *startPattern=pattern;Node *retryPattern;
 
@@ -54,27 +84,28 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
     }
     else {
       if(*(text+i)!=0){
+        if(pattern->next[patternIndex+1]!=NULL ){
+          if(firstRetry){
+            retryIndex=i;
+            retryPattern=pattern;
+            firstRetry=0;
+          }
+          retryEn=1;
+        }
         do{
           matchEle(&matchObj,&match,text,pattern,i,&j);
-          if(!matchObj->match && pattern->attribute!=0){
-            attributeSelect(&matchObj,pattern,&j,&count);
-            break;
-          }
-          if(pattern->attribute!=0)
+          if(pattern->attribute!=0){
+            if(!matchObj->match){
+              attributeSelect(&matchObj,pattern,&j,&count);
+              break;
+            }
             count++;
+          }
+
           i++;
         }while(pattern->attribute!=0);
 
-        if(matchObj->match){
-          patternIndex=0;
-          pattern=pattern->next[patternIndex];
-        }
-        else{
-          pattern=startPattern;
-          j=0;
-        }
-
-
+        patternPathDecision(matchObj,&pattern,startPattern,retryPattern,&patternIndex,&retryEn,retryIndex,&i,&j);
       }
       else{
         j=0;
