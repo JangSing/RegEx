@@ -600,7 +600,7 @@ void test_Regex_given_pattern_with_multiples_branches_one_of_the_branches_matche
  *         \        /
  *          --> d -
  */
-void test_Regex_pattern_with_multiples_branches_before_have_text(void)
+void test_Regex_pattern_before_multiples_branches_matches_have_text(void)
 {
   Node *pattern=NULL;
 
@@ -618,5 +618,67 @@ void test_Regex_pattern_with_multiples_branches_before_have_text(void)
   TEST_ASSERT_MATCH(0,"ace",3,4,matchObj);
   TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
   TEST_ASSERT_NULL(matchObj->ptr[1]);
+}
+
+/**
+ *  text    = abe
+ *  pattern = a[bcd]e
+ *
+ *           --> b -
+ *         /        \
+ *        a --> c --> e
+ *         \        /
+ *          --> d -
+ */
+void test_Regex_pattern_before_and_after_multiples_branches_matches_have_text(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="oiajacebbb";
+
+  pattern=nodeA;
+  addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
+  addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
+  addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_MATCH(0,"ace",3,4,matchObj);
+  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[2]);
+}
+
+/**
+ *  text    = abe
+ *  pattern = a[bcd]e
+ *
+ *           --> b -
+ *         /        \
+ *        a --> c --> e
+ *         \        /
+ *          --> d -
+ */
+void test_Regex_pattern_multiples_branches_with_multiples_matches(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="oiajacebbbadeuhsduhabe";
+
+  pattern=nodeA;
+  addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
+  addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
+  addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_MATCH(0,"ace",3,4,matchObj);
+  TEST_ASSERT_MATCH(1,"ade",3,10,matchObj);
+  TEST_ASSERT_MATCH(2,"abe",3,19,matchObj);
+  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[3]);
 }
 

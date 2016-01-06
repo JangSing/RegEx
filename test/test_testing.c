@@ -73,36 +73,26 @@ void tearDown(void)
  *         \        /
  *          --> d -
  */
-void test_Regex_pattern_with_multiples_branches_before_have_text(void)
+void test_Regex_pattern_after_multiples_branches_have_text(void)
 {
   Node *pattern=NULL;
 
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="oiajace";
+  char *str="oiajacebbbadeuhsduhabe";
 
   pattern=nodeA;
   addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
   addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
   addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
 
-  TEST_ASSERT_EQUAL_PTR(nodeB,nodeA->next[0]);
-  TEST_ASSERT_EQUAL_PTR(nodeC,nodeA->next[1]);
-  TEST_ASSERT_EQUAL_PTR(nodeD,nodeA->next[2]);
-  TEST_ASSERT_NULL(nodeA->next[3]);
-  TEST_ASSERT_EQUAL_PTR(nodeE,nodeB->next[0]);
-  TEST_ASSERT_NULL(nodeB->next[1]);
-  TEST_ASSERT_EQUAL_PTR(nodeE,nodeC->next[0]);
-  TEST_ASSERT_NULL(nodeC->next[1]);
-  TEST_ASSERT_EQUAL_PTR(nodeE,nodeD->next[0]);
-  TEST_ASSERT_NULL(nodeD->next[1]);
-
-
   matchObj=matchObjectRegEx(matchObj,str,pattern);
 
   TEST_ASSERT_MATCH(0,"ace",3,4,matchObj);
-  TEST_ASSERT_EQUAL(1,matchObj->numOfMatch);
-  TEST_ASSERT_NULL(matchObj->ptr[1]);
+  TEST_ASSERT_MATCH(1,"ade",3,10,matchObj);
+  TEST_ASSERT_MATCH(2,"abe",3,19,matchObj);
+  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
+  TEST_ASSERT_NULL(matchObj->ptr[3]);
 }
 
 
