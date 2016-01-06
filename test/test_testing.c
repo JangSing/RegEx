@@ -73,26 +73,24 @@ void tearDown(void)
  *         \        /
  *          --> d -
  */
-void test_Regex_pattern_after_multiples_branches_have_text(void)
+void test_Regex_given_pattern_with_multiples_branches_none_matches_should_return_NULL_matchObj(void)
 {
   Node *pattern=NULL;
 
   MatchObject *matchObj=createMatchObj();
   int i;
-  char *str="oiajacebbbadeuhsduhabe";
+  char *str="aaaa";
 
+  
   pattern=nodeA;
   addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
   addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
   addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
+  addNode(&nodeE,0,NULL);
 
   matchObj=matchObjectRegEx(matchObj,str,pattern);
 
-  TEST_ASSERT_MATCH(0,"ace",3,4,matchObj);
-  TEST_ASSERT_MATCH(1,"ade",3,10,matchObj);
-  TEST_ASSERT_MATCH(2,"abe",3,19,matchObj);
-  TEST_ASSERT_EQUAL(3,matchObj->numOfMatch);
-  TEST_ASSERT_NULL(matchObj->ptr[3]);
+  TEST_ASSERT_NULL(matchObj->ptr[0]);
 }
 
 

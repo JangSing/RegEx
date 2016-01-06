@@ -34,8 +34,9 @@ MatchObject *createMatchObj();
 Match *createMatch();
 void endOfTextOrSpace(MatchObject **matchObj,Match **match,char *text,Node *startPattern,int *i);
 void attributeSelect(MatchObject **matchObj,Node *pattern,int *j,int *count);
-void patternPathDecision(MatchObject *matchObj, Node **pattern,Node *startPattern,Node *retryPattern,
-                                                        int *patternIndex,int *retryEn,int retryIndex,int *retryFinish,int *i,int *j);
+void patternPathDecision(MatchObject **matchObj, Node **pattern,Node *startPattern,Node *retryPattern,
+                                          int *patternIndex,int *retryEn,int retryIndex,int *newRetryPoss,int *endOfBranch,int *i,int *j);
+int maxBranch(Node *pattern);
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern);
 
 #endif // Regex_H

@@ -570,6 +570,34 @@ void test_Regex_given_pattern_with_digit_attribute_exact_match_exact_number_shou
  *         \        /
  *          --> d -
  */
+void test_Regex_given_pattern_with_multiples_branches_none_matches_should_return_NULL_matchObj(void)
+{
+  Node *pattern=NULL;
+
+  MatchObject *matchObj=createMatchObj();
+  int i;
+  char *str="aaaada";
+
+  pattern=nodeA;
+  addNode(&pattern,0,nodeB);addNode(&nodeB,0,nodeE);
+  addNode(&pattern,1,nodeC);addNode(&nodeC,0,nodeE);
+  addNode(&pattern,2,nodeD);addNode(&nodeD,0,nodeE);
+
+  matchObj=matchObjectRegEx(matchObj,str,pattern);
+
+  TEST_ASSERT_NULL(matchObj->ptr[0]);
+}
+
+/**
+ *  text    = abe
+ *  pattern = a[bcd]e
+ *
+ *           --> b -
+ *         /        \
+ *        a --> c --> e
+ *         \        /
+ *          --> d -
+ */
 void test_Regex_given_pattern_with_multiples_branches_one_of_the_branches_matches_text_should_return_matchObj(void)
 {
   Node *pattern=NULL;

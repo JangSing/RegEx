@@ -35,18 +35,23 @@ void attributeSelect(MatchObject **matchObj,Node *pattern,int *j,int *count){
   }
 }
 
-void patternPathDecision(MatchObject *matchObj, Node **pattern,Node *startPattern,Node *retryPattern,
-                                                        int *patternIndex,int *retryEn,int retryIndex,int *retryFinish,int *i,int *j){
+void patternPathDecision(MatchObject **matchObj, Node **pattern,Node *startPattern,Node *retryPattern,
+                                 int *patternIndex,int *retryEn,int retryIndex,int *newRetryPoss,int *endOfBranch,int *i,int *j){
 
   if(matchObj==NULL || *pattern==NULL || startPattern==NULL || retryPattern==NULL)
     throwError(ERR_NULL_NODE,"matchObj/pattern/startPattern/retryPattern cannot be NULL.");
-  if(matchObj->match){
+  if((*matchObj)->match){
     if((*pattern)->next[1]==NULL){
       (*pattern)=(*pattern)->next[0];
       *patternIndex=0;
-      *retryFinish=1;
+      *newRetryPoss=1;
     }
     else{
+      *endOfBranch=maxBranch(startPattern);
+      if(*newRetryPoss && *patternIndex!=*endOfBranch){
+        *patternIndex=0;
+        *endOfBranch=0;
+      }
       (*pattern)=(*pattern)->next[*patternIndex];
     }
   }
@@ -54,12 +59,15 @@ void patternPathDecision(MatchObject *matchObj, Node **pattern,Node *startPatter
     if(*retryEn){
       *retryEn=0;
       (*j)--;
-      (*pattern)=retryPattern;
-      (*i)=retryIndex;
+      *pattern=retryPattern;
+      *i=retryIndex;
       (*patternIndex)++;
-      *retryFinish=0;
-      if((*pattern)->next[*patternIndex+1]==NULL){
-        *retryFinish=1;
+      *newRetryPoss=0;
+      if((*pattern)->next[(*patternIndex)+1]==NULL){
+        (*matchObj)->match=0;
+        *newRetryPoss=1;
+        *pattern=startPattern;
+        *j=0;
       }
     }
     else{
@@ -70,15 +78,27 @@ void patternPathDecision(MatchObject *matchObj, Node **pattern,Node *startPatter
   }
 }
 
+int maxBranch(Node *pattern){
+  int index=0;
+  while(pattern->next[1]==NULL){
+    pattern=pattern->next[0];
+  }
+  while(pattern->next[index]!=NULL){
+    index++;
+  }
+  return (index-1);
+}
+
 MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
   if(matchObj==NULL || text==NULL || pattern==NULL)
     return NULL;
   Match *match;
-  int retryEn=0;int retryFinish=1;
   // i=>textIndex j=>matchTextIndex
-  int i=0;int j=0;int patternIndex=0;
-  int retryIndex=0;
+  int i=0;int j=0;
+  int retryEn=0;int newRetryPoss=1;
+  int patternIndex=0;int retryIndex=0;
   int count=0;
+  int endOfBranch=0;
   Node *startPattern=pattern;Node *retryPattern;
 
   while(1){
@@ -91,9 +111,8 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
     }
     else {
       if(*(text+i)!=0){
-        // printf("%c  %c\n",*(text+i),pattern->data);
-        if(pattern->next[patternIndex+1]!=NULL ){
-          if(retryFinish){
+        if( pattern->next[patternIndex+1]!=NULL ){
+          if(newRetryPoss){
             retryIndex=i;
             retryPattern=pattern;
           }
@@ -112,7 +131,7 @@ MatchObject *matchObjectRegEx(MatchObject *matchObj,char *text,Node *pattern){
           i++;
         }while(pattern->attribute!=0);
 
-        patternPathDecision(matchObj,&pattern,startPattern,retryPattern,&patternIndex,&retryEn,retryIndex,&retryFinish,&i,&j);
+        patternPathDecision(&matchObj,&pattern,startPattern,retryPattern,&patternIndex,&retryEn,retryIndex,&newRetryPoss,&endOfBranch,&i,&j);
       }
       else{
         j=0;
